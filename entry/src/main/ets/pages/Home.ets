@@ -43,6 +43,9 @@ export default struct Home {
 
         TileLayout({ TileList: this.TileData })
 
+        PlanLayout({ PlanList: this.PlanData })
+
+        
       }
       .height(211 - 36)
       .width("100%")
