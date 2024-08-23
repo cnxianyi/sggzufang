@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
 
 const request = axios.create({
-  baseURL: 'http://localhost:6060',
+  baseURL: 'http://192.168.2.200:6060',
   timeout: 20000,
 })
 

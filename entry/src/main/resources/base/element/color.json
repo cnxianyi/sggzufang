@@ -35,6 +35,18 @@
     {
       "name": "gray",
       "value": "#999999"
+    },
+    {
+      "name": "barFontGray",
+      "value": "#A0A0A0"
+    },
+    {
+      "name": "swiperIndicator",
+      "value": "#CCCBCB"
+    },
+    {
+      "name": "swiperIndicatorSelect",
+      "value": "#479559"
     }
   ]
 }

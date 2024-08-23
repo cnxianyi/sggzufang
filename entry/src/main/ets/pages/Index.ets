@@ -19,7 +19,7 @@ struct Index {
         .height(28)
       Text(text)
         .fontSize(10)
-        .fontColor(this.barIndex === index ? $r('app.color.black') : '#A0A0A0')
+        .fontColor(this.barIndex === index ? $r('app.color.black') : $r("app.color.barFontGray"))
     }
   }
 
