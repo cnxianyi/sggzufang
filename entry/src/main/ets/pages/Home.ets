@@ -3,7 +3,8 @@ import { INavItem, IBannerItem, ITileItem, IPlanItem, BasicDataSource } from '..
 import SwiperLayout from '../views/home/SwiperLayout'
 import SearchBar from '../views/home/SearchBar'
 import NavLayout from '../views/home/NavLayout'
-import { PADDING } from '../constants/size'
+import TileLayout from '../views/home/TileLayout'
+import PlanLayout from '../views/home/PlanLayout'
 
 @Component
 export default struct Home {
@@ -39,7 +40,9 @@ export default struct Home {
         .alignContent(Alignment.Top)
 
         NavLayout({ NavList: this.NavData })
-          
+
+        TileLayout({ TileList: this.TileData })
+
       }
       .height(211 - 36)
       .width("100%")
