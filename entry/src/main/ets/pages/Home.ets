@@ -5,6 +5,7 @@ import SearchBar from '../views/home/SearchBar'
 import NavLayout from '../views/home/NavLayout'
 import TileLayout from '../views/home/TileLayout'
 import PlanLayout from '../views/home/PlanLayout'
+import AdPicture from '../views/home/AdPicture'
 
 @Component
 export default struct Home {
@@ -45,7 +46,7 @@ export default struct Home {
 
         PlanLayout({ PlanList: this.PlanData })
 
-        
+        AdPicture({ AdPicture: this.AdPicture })
       }
       .height(211 - 36)
       .width("100%")
