@@ -47,6 +47,18 @@
     {
       "name": "swiperIndicatorSelect",
       "value": "#479559"
+    },
+    {
+      "name": "roomOrange",
+      "value": "#E03810"
+    },
+    {
+      "name": "roomGreen",
+      "value": "#36D1A1"
+    },
+    {
+      "name": "roomGray",
+      "value": "#B3B3B3"
     }
   ]
 }

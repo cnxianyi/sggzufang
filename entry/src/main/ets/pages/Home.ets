@@ -6,6 +6,9 @@ import NavLayout from '../views/home/NavLayout'
 import TileLayout from '../views/home/TileLayout'
 import PlanLayout from '../views/home/PlanLayout'
 import AdPicture from '../views/home/AdPicture'
+import RoomRecommend from '../components/roomRecommend/RoomRecommend'
+import { getRoomRecommendDataApi } from '../API/roomRecommend'
+import { IRoomRecommend } from '../model/roomRecommend'
 
 @Component
 export default struct Home {
@@ -15,10 +18,13 @@ export default struct Home {
   @State TileData: ITileItem[] = []
   @State PlanData: IPlanItem[] = []
   @State AdPicture: string = ''
+  // 房源
+  @State RoomData: IRoomRecommend[] = []
 
   // 组件生命周期
   aboutToAppear() {
     this.getHomeData()
+    this.getRoomData()
   }
 
   async getHomeData() {
@@ -30,15 +36,27 @@ export default struct Home {
     this.AdPicture = res.adPicture
   }
 
+  async getRoomData() {
+    const res = await getRoomRecommendDataApi()
+    console.log(JSON.stringify(res))
+    this.RoomData = res
+  }
+
   build() {
     Scroll() {
-      Column() {
-        Stack() {
-          SwiperLayout({ BannerData: this.BannerData })
 
-          SearchBar()
+      Column() {
+        Column() {
+          Stack() {
+            SwiperLayout({ BannerData: this.BannerData })
+
+            SearchBar()
+          }
+          .alignContent(Alignment.Top)
         }
-        .alignContent(Alignment.Top)
+        .height(211 - 36)
+        .width("100%")
+
 
         NavLayout({ NavList: this.NavData })
 
@@ -47,9 +65,10 @@ export default struct Home {
         PlanLayout({ PlanList: this.PlanData })
 
         AdPicture({ AdPicture: this.AdPicture })
+
+        RoomRecommend({ roomData: this.RoomData })
+
       }
-      .height(211 - 36)
-      .width("100%")
     }
     .width("100%")
     .height("100%")
