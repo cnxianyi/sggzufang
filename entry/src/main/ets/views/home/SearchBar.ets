@@ -2,10 +2,14 @@ import { PADDING } from '../../constants/size'
 
 @Component
 export default struct SearchBar {
+  @Prop bgColor: string = 'rgba(255, 255, 255, 0)'
+  @Prop ftColor: string = 'rgb(255, 255, 255)'
+
   build() {
     Row() {
-      Text("北京").fontSize(14).fontColor($r('app.color.white'))
+      Text("北京").fontSize(14)
         .margin({ right: 16 })
+        .fontColor(this.ftColor)
 
       Row() {
         Image($r('app.media.search'))
@@ -31,6 +35,7 @@ export default struct SearchBar {
 
         Image($r("app.media.position")).imageStyles(18).margin({ left: 16 })
 
+
       }
       .layoutWeight(1)
       .height(38)
@@ -43,9 +48,14 @@ export default struct SearchBar {
       })
 
       // 图片需要通过 fillColor 修改颜色，只有 svg 图片能用
-      Image($r("app.media.message")).imageStyles(24).fillColor($r('app.color.white'))
+      Image($r("app.media.message")).imageStyles(24)
+        .fillColor(this.ftColor)
         .margin({ left: 16 })
     }
+    .backgroundColor(this.bgColor)
+    .position({
+      top: 0
+    })
     .width('100%')
     .padding({
       left: PADDING,

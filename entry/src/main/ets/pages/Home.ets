@@ -20,6 +20,10 @@ export default struct Home {
   @State AdPicture: string = ''
   // 房源
   @State RoomData: IRoomRecommend[] = []
+  // 滚动
+  scrollY: number = 0
+  @State bgColor: string = 'rgba(255, 255, 255, 0)'
+  @State ftColor: string = 'rgb(255, 255, 255)'
 
   // 组件生命周期
   aboutToAppear() {
@@ -42,37 +46,62 @@ export default struct Home {
     this.RoomData = res
   }
 
-  build() {
-    Scroll() {
+  onScroll = (xOffset: number, yOffset: number) => {
+    this.scrollY += yOffset
+    let top = 10
+    let end = 211 - 36
 
-      Column() {
-        Column() {
-          Stack() {
-            SwiperLayout({ BannerData: this.BannerData })
-
-            SearchBar()
-          }
-          .alignContent(Alignment.Top)
-        }
-        .height(211 - 36)
-        .width("100%")
-
-
-        NavLayout({ NavList: this.NavData })
-
-        TileLayout({ TileList: this.TileData })
-
-        PlanLayout({ PlanList: this.PlanData })
-
-        AdPicture({ AdPicture: this.AdPicture })
-
-        RoomRecommend({ roomData: this.RoomData })
-
-      }
+    if (this.scrollY < top) {
+      // 恢复初始状态
+      this.bgColor = 'rgba(255, 255, 255, 0)'
+      this.ftColor = 'rgb(255, 255, 255)'
+    } else if (this.scrollY < end) {
+      let v = this.scrollY / (end - top)
+      let b = v <= 1 ? v.toFixed(2) : '1'
+      let f = v <= 1 ? (255 - 255 * v).toFixed() : '0'
+      // 渐变中
+      this.bgColor = `rgba(255, 255, 255, ${b})`
+      this.ftColor = `rgb(${f} , ${f} , ${f} )`
+    } else {
+      // 完成渐变
+      this.bgColor = 'rgba(255, 255, 255, 1)'
+      this.ftColor = 'rgb(0 , 0 , 0)'
     }
-    .width("100%")
-    .height("100%")
-    .scrollBar(BarState.Off) // 关闭滚动条
-    .align(Alignment.Top) // top显示
+  }
+
+  build() {
+
+    Stack() {
+      Scroll() {
+        Column() {
+          SwiperLayout({ BannerData: this.BannerData })
+            .height(211 - 36)
+            .width("100%")
+          Column() {
+            NavLayout({ NavList: this.NavData })
+
+            TileLayout({ TileList: this.TileData })
+
+            PlanLayout({ PlanList: this.PlanData })
+
+            AdPicture({ AdPicture: this.AdPicture })
+
+            RoomRecommend({ roomData: this.RoomData })
+          }
+        }
+      }
+      .onDidScroll(this.onScroll)
+      .width("100%")
+      .height("100%")
+      .scrollBar(BarState.Off) // 关闭滚动条
+      .align(Alignment.Top) // top显示
+
+      SearchBar({
+        bgColor: this.bgColor,
+        ftColor: this.ftColor
+      })
+    }
+    .alignContent(Alignment.Top)
+
   }
 }
