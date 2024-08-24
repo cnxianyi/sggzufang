@@ -10,6 +10,8 @@ import { getRoomRecommendDataApi } from '../API/roomRecommend'
 import { IRoomRecommend } from '../model/roomRecommend'
 import scrollTopBar from '../components/scrollTopBar/scrollTopBar'
 import SearchBar from '../views/home/SearchBar'
+import { getWindowTopHeight } from '../utils/responsive'
+
 
 @Component
 export default struct Home {
@@ -47,7 +49,7 @@ export default struct Home {
   Content() {
     Column() {
       SwiperLayout({ BannerData: this.BannerData })
-        .height(211 - 36)
+        .height(211 - 36 + getWindowTopHeight())
         .width("100%")
       Column() {
         NavLayout({ NavList: this.NavData })

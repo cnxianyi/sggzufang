@@ -9,6 +9,9 @@ import AdPicture from '../../views/home/AdPicture'
 import RoomRecommend from '../../components/roomRecommend/RoomRecommend'
 import { getRoomRecommendDataApi } from '../../API/roomRecommend'
 import { IRoomRecommend } from '../../model/roomRecommend'
+import { getWindowTopHeight } from '../../utils/responsive'
+import { window } from '@kit.ArkUI'
+import { rgbaToHex } from '../../utils/color'
 
 @Component
 export default struct Home {
@@ -27,6 +30,16 @@ export default struct Home {
   // builder
   @BuilderParam Content: () => void = this.defaultBuilder
   @BuilderParam navBuilder: ($$: IColor) => void = this.defaultBuilder
+  // windows对象
+  //windowClass?: window.Window
+  windowClass = window.getLastWindow(getContext())
+  getWindowClass = async (color: string) => {
+    const windowClass = await window.getLastWindow(getContext())
+    windowClass.setWindowSystemBarProperties({
+      statusBarContentColor: color,
+      navigationBarColor: color,
+    })
+  }
 
   @Builder
   defaultBuilder() {
@@ -36,6 +49,7 @@ export default struct Home {
   aboutToAppear() {
     this.getHomeData()
     this.getRoomData()
+    this.getWindowClass(rgbaToHex(this.ftColor))
   }
 
   async getHomeData() {
@@ -49,19 +63,20 @@ export default struct Home {
 
   async getRoomData() {
     const res = await getRoomRecommendDataApi()
-    console.log(JSON.stringify(res))
     this.RoomData = res
   }
 
   onScroll = (xOffset: number, yOffset: number) => {
     this.scrollY += yOffset
     let top = 10
-    let end = 211 - 36
+    let end = 211 - 36 + getWindowTopHeight()
 
     if (this.scrollY < top) {
       // 恢复初始状态
       this.bgColor = 'rgba(255, 255, 255, 0)'
       this.ftColor = 'rgb(255, 255, 255)'
+      this.getWindowClass(rgbaToHex(this.ftColor))
+
     } else if (this.scrollY < end) {
       let v = this.scrollY / (end - top)
       let b = v <= 1 ? v.toFixed(2) : '1'
@@ -69,10 +84,12 @@ export default struct Home {
       // 渐变中
       this.bgColor = `rgba(255, 255, 255, ${b})`
       this.ftColor = `rgb(${f} , ${f} , ${f} )`
+      this.getWindowClass(rgbaToHex(this.ftColor))
     } else {
       // 完成渐变
       this.bgColor = 'rgba(255, 255, 255, 1)'
       this.ftColor = 'rgb(0 , 0 , 0)'
+      this.getWindowClass(rgbaToHex(this.ftColor))
     }
   }
 
@@ -91,11 +108,18 @@ export default struct Home {
       .scrollBar(BarState.Off) // 关闭滚动条
       .align(Alignment.Top) // top显示
 
-      
-      this.navBuilder({
-        bgColor: this.bgColor,
-        ftColor: this.ftColor
+      // 包括状态栏部分
+      Column() {
+        this.navBuilder({
+          bgColor: this.bgColor,
+          ftColor: this.ftColor
+        })
+      }.padding({
+        top: getWindowTopHeight(),
+        left: 0
       })
+      .backgroundColor(this.bgColor)
+      .width('100%')
     }
     .alignContent(Alignment.Top)
   }
