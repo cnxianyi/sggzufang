@@ -1,3 +1,4 @@
+import { getWindowBottomHeight, getWindowTopHeight } from '../utils/responsive'
 import Discover from './Discover'
 import Home from "./Home"
 import My from './My'
@@ -53,7 +54,7 @@ struct Index {
       .tabBar(this.tabBarBuilder($r("app.media.tabbar_my"), $r("app.media.tabbar_my_active"), "我的", 4))
     }
     // bar 高度
-    .barHeight(50)
+    .barHeight(50 + (getWindowBottomHeight() || 24))
     // 关闭切换
     .scrollable(false)
     // 切换事件
