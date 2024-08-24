@@ -122,3 +122,8 @@ export interface IPlanItem {
   id: number;
   imageURL: string;
 }
+
+export interface IColor {
+  bgColor: string,
+  ftColor: string
+}

@@ -1,7 +1,6 @@
 import { getHomeDataApi } from '../API/home'
-import { INavItem, IBannerItem, ITileItem, IPlanItem, BasicDataSource } from '../model/home'
+import { BasicDataSource, IColor, INavItem, IPlanItem, ITileItem } from '../model/home'
 import SwiperLayout from '../views/home/SwiperLayout'
-import SearchBar from '../views/home/SearchBar'
 import NavLayout from '../views/home/NavLayout'
 import TileLayout from '../views/home/TileLayout'
 import PlanLayout from '../views/home/PlanLayout'
@@ -9,6 +8,8 @@ import AdPicture from '../views/home/AdPicture'
 import RoomRecommend from '../components/roomRecommend/RoomRecommend'
 import { getRoomRecommendDataApi } from '../API/roomRecommend'
 import { IRoomRecommend } from '../model/roomRecommend'
+import scrollTopBar from '../components/scrollTopBar/scrollTopBar'
+import SearchBar from '../views/home/SearchBar'
 
 @Component
 export default struct Home {
@@ -20,10 +21,6 @@ export default struct Home {
   @State AdPicture: string = ''
   // 房源
   @State RoomData: IRoomRecommend[] = []
-  // 滚动
-  scrollY: number = 0
-  @State bgColor: string = 'rgba(255, 255, 255, 0)'
-  @State ftColor: string = 'rgb(255, 255, 255)'
 
   // 组件生命周期
   aboutToAppear() {
@@ -46,62 +43,46 @@ export default struct Home {
     this.RoomData = res
   }
 
-  onScroll = (xOffset: number, yOffset: number) => {
-    this.scrollY += yOffset
-    let top = 10
-    let end = 211 - 36
+  @Builder
+  Content() {
+    Column() {
+      SwiperLayout({ BannerData: this.BannerData })
+        .height(211 - 36)
+        .width("100%")
+      Column() {
+        NavLayout({ NavList: this.NavData })
 
-    if (this.scrollY < top) {
-      // 恢复初始状态
-      this.bgColor = 'rgba(255, 255, 255, 0)'
-      this.ftColor = 'rgb(255, 255, 255)'
-    } else if (this.scrollY < end) {
-      let v = this.scrollY / (end - top)
-      let b = v <= 1 ? v.toFixed(2) : '1'
-      let f = v <= 1 ? (255 - 255 * v).toFixed() : '0'
-      // 渐变中
-      this.bgColor = `rgba(255, 255, 255, ${b})`
-      this.ftColor = `rgb(${f} , ${f} , ${f} )`
-    } else {
-      // 完成渐变
-      this.bgColor = 'rgba(255, 255, 255, 1)'
-      this.ftColor = 'rgb(0 , 0 , 0)'
+        TileLayout({ TileList: this.TileData, })
+
+        PlanLayout({ PlanList: this.PlanData, })
+
+        AdPicture({ AdPicture: this.AdPicture, })
+
+        RoomRecommend({ roomData: this.RoomData })
+      }
     }
+  }
+
+  // 创建装饰器时规定需要传入一个有bgColor和ftColor的对象
+  @Builder
+  navBuilder($$: IColor) {
+    SearchBar({ bgColor: $$.bgColor, ftColor: $$.ftColor });
   }
 
   build() {
 
-    Stack() {
-      Scroll() {
-        Column() {
-          SwiperLayout({ BannerData: this.BannerData })
-            .height(211 - 36)
-            .width("100%")
-          Column() {
-            NavLayout({ NavList: this.NavData })
-
-            TileLayout({ TileList: this.TileData })
-
-            PlanLayout({ PlanList: this.PlanData })
-
-            AdPicture({ AdPicture: this.AdPicture })
-
-            RoomRecommend({ roomData: this.RoomData })
-          }
-        }
-      }
-      .onDidScroll(this.onScroll)
-      .width("100%")
-      .height("100%")
-      .scrollBar(BarState.Off) // 关闭滚动条
-      .align(Alignment.Top) // top显示
-
-      SearchBar({
-        bgColor: this.bgColor,
-        ftColor: this.ftColor
+    Column() {
+      scrollTopBar({
+        // 绑定了上下文
+        Content: () => {
+          this.Content()
+        },
+        // 直接传递方法而不是结果，让子组件引用
+        // 此时子组件能够自己传递参数
+        navBuilder: this.navBuilder
       })
     }
-    .alignContent(Alignment.Top)
-
   }
 }
+
+
